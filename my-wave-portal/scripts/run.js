@@ -1,30 +1,34 @@
-// run.js
-const main = async () => {
-  const [owner, randomPerson] = await hre.ethers.getSigners();
-  const waveContractFactory = await hre.ethers.getContractFactory("WavePortal");
-  const waveContract = await waveContractFactory.deploy();
-  const wavePortal = await waveContract.deployed();
 
-  console.log("Contract deployed to:", wavePortal.address);
-  console.log("Contract deployed by:", owner.address);
 
-  let waveCount;
-  waveCount = await waveContract.getTotalWaves();
+const main = async () =>{
+	const [owner, A] = await hre.ethers.getSigners();
+	const cpmpiled = await hre.ethers.getContractFactory("WavePortal");
+	const execut = await cpmpiled.deploy();
+	//const info = await execut.deployed();
 
-  let waveTxn = await waveContract.wave();
-  await waveTxn.wait();
-
-  waveCount = await waveContract.getTotalWaves();
+	//console.log("Contract deployed to:", info.address);
+	//console.log("Contract deployed by:", owner.address);
+	console.log(owner.address + "\t" + (await owner.getBalance()).toString());
+	console.log(A.address + "\t" + (await  A.getBalance()).toString());
+	let waveCount = await execut.getTotalWaves();
+	waveCount = await execut.connect(A).wave();
+	await waveCount.wait();
+	waveCount = await execut.connect(owner).wave();
+	await waveCount.wait();
+	waveCount = await execut.getTotalWaves();
+	console.log(owner.address + "\t" + (await  owner.getBalance()).toString());
+	console.log(A.address + "\t" + (await  A.getBalance()).toString());
 };
 
 const runMain = async () => {
-  try {
-    await main();
-    process.exit(0);
-  } catch (error) {
-    console.log(error);
-    process.exit(1);
-  }
-};
+	try {
+	  await main();
+	  process.exit(0);
+	} catch (error) {
+	  console.log(error);
+	  process.exit(1);
+	}
+  };
 
-runMain();
+  runMain();
+
